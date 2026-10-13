@@ -1,0 +1,28 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: twibbon-nginx
+    restart: unless-stopped
+    ports:
+      - "8087:80"
+      - "8077:80"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./public:/var/www/html/public:ro
+      - ./storage/app/public:/var/www/html/public/storage:ro
+    depends_on:
+      - php
+
+  php:
+    build: .
+    container_name: twibbon-php
+    restart: unless-stopped
+    volumes:
+      - ./app:/var/www/html/app
+      - ./bootstrap:/var/www/html/bootstrap
+      - ./routes:/var/www/html/routes
+      - ./resources:/var/www/html/resources
+      - ./storage:/var/www/html/storage
+      - ./database:/var/www/html/database
+      - ./.env:/var/www/html/.env
+      - ./public/build:/var/www/html/public/build
